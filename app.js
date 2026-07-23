@@ -14,10 +14,12 @@ import adminRoutes from "./routes/dashboardRoutes.js";
 
 const app = express();
 
-
 app.use(cors({
-  origin: 'http://localhost:5173', // Your frontend URL
-  credentials: true, // Allow cookies to be sent
+  origin: [
+    'http://localhost:5173',                    // Local development
+    'https://bytebuy-zeta.vercel.app'            // Your live frontend
+  ],
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
   exposedHeaders: ['Set-Cookie']
