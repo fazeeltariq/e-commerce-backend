@@ -1,5 +1,5 @@
 import express from "express";
-import cors from "cors"; // Add this import
+import cors from "cors";
 import cookieParser from "cookie-parser";
 
 import errorHandler from "./middleware/errorMiddleware.js";
@@ -14,11 +14,12 @@ import adminRoutes from "./routes/dashboardRoutes.js";
 
 const app = express();
 
+// ✅ CORS Configuration
 app.use(cors({
   origin: [
-    'http://localhost:5173',                    // Local development
+    'http://localhost:5173',
     'http://localhost:5174',
-    'https://bytebuy-zeta.vercel.app'            // Your live frontend
+    'https://bytebuy-zeta.vercel.app'
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -26,17 +27,21 @@ app.use(cors({
   exposedHeaders: ['Set-Cookie']
 }));
 
-app.options('*', cors());
+// ✅ FIX: Replace app.options('*', cors()) with manual OPTIONS handling
+app.use((req, res, next) => {
+    if (req.method === 'OPTIONS') {
+        res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+        res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Cookie');
+        res.header('Access-Control-Allow-Credentials', 'true');
+        return res.sendStatus(200);
+    }
+    next();
+});
 
-// ============================================
-// 2. Middleware
-// ============================================
 app.use(cookieParser());
-app.use(express.json()); // if request body has JSON, convert into JavaScript object.
+app.use(express.json());
 
-// ============================================
-// 3. Routes
-// ============================================
+// Routes
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
@@ -45,17 +50,13 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 
-// ============================================
-// 4. 404 Handler
-// ============================================
+// 404 Handler
 app.use((req, res, next) => {
     res.status(404);
     next(new Error("Route not found"));
 });
 
-// ============================================
-// 5. Error Handler
-// ============================================
-app.use(errorHandler); // runs only if error thrown by controller
+// Error Handler
+app.use(errorHandler);
 
 export default app;
