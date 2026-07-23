@@ -8,13 +8,13 @@ import generateToken from "../utils/generateToken.js";
 const setTokenCookie = (res, token) => {
     res.cookie("token", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
+        secure: true,  // ✅ Must be true for HTTPS
+        sameSite: "none",  // ✅ Changed from 'lax' to 'none' for cross-domain
         maxAge: 7 * 24 * 60 * 60 * 1000,
+        path: "/",
+        domain: ".onrender.com"  // ✅ Add this
     });
 };
-
-
 
 export const registerUser = asyncHandler( async (req, res) => {
 
