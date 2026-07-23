@@ -8,13 +8,13 @@ import generateToken from "../utils/generateToken.js";
 const setTokenCookie = (res, token) => {
     res.cookie("token", token, {
         httpOnly: true,
-        secure: false,        // ✅ CHANGE TO FALSE
-        sameSite: "lax",      // ✅ CHANGE TO LAX
+        secure: true,      // production HTTPS
+        sameSite: "none",  // allow cross-origin
         maxAge: 7 * 24 * 60 * 60 * 1000,
         path: "/",
-        // ❌ REMOVE domain line completely
     });
 };
+
 
 export const registerUser = asyncHandler( async (req, res) => {
 
