@@ -8,11 +8,11 @@ import generateToken from "../utils/generateToken.js";
 const setTokenCookie = (res, token) => {
     res.cookie("token", token, {
         httpOnly: true,
-        secure: true,  // ✅ Must be true for HTTPS
-        sameSite: "none",  // ✅ Changed from 'lax' to 'none' for cross-domain
+        secure: false,        // ✅ CHANGE TO FALSE
+        sameSite: "lax",      // ✅ CHANGE TO LAX
         maxAge: 7 * 24 * 60 * 60 * 1000,
         path: "/",
-        domain: ".onrender.com"  // ✅ Add this
+        // ❌ REMOVE domain line completely
     });
 };
 
